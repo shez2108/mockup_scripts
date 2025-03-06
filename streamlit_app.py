@@ -13,7 +13,7 @@ if password != "password":
     st.stop()
 
 # Create tabs
-tab1, tab2 = st.tabs(["Run Domain Analysis", "Merge Data for Reports", "Search Knowledge Base"])
+tab1, tab2, tab3 = st.tabs(["Run Domain Analysis", "Merge Data for Reports", "Search Knowledge Base"])
 
 
     st.write(
