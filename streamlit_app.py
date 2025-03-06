@@ -13,9 +13,9 @@ if password != "password":
     st.stop()
 
 # Create tabs
-tab1 = st.tabs(["Run Domain Analysis"])
+tab1, tab2 = st.tabs(["Run Domain Analysis", "Merge Data for Reports", "Search Knowledge Base"])
 
-with tab1:
+
     st.write(
         "Input the domain and competitors of the site you'd like to analyse:"
     )
@@ -46,7 +46,7 @@ with tab1:
             st.write('No valid competitor domains have been entered.')
     else:
         domains = [domain1]
-        #st.write(f'Getting relevance data for {domain1}')
+    
 
     if st.button('Start Analysis'):
         st.write('Running Crawl for', domain1, domains)
