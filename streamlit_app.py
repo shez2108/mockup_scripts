@@ -124,28 +124,28 @@ def get_sentiment(text):
     
 convert_button = st.button("Search")
 if convert_button:
+    st.write(f'Getting query results for {num_queries} queries.')
     try:
         total_queries = get_query_response(query)
         if not total_queries:
             st.error('No output received from response. Try searching again or refreshing the page.')
             pass
         df = pd.json_normalize(total_queries['serps'])
+        credentials_dict = st.secrets["GOOGLE_CREDENTIALS"]
+        creds = service_account.Credentials.from_service_account_info(dict(credentials_dict))
+        client = language_v1.LanguageServiceClient(credentials=creds)
+        # Apply the function to the 'result' column
+        df[["sentiment_score", "sentiment_magnitude"]] = df["result"].apply(lambda x: pd.Series(get_sentiment(x)))
+        df['brand_product'] = df['brand'] + ' ' + df['product name']
+        st.dataframe(df)
+        brand_counts = df['brand'].value_counts()
+        st.bar_chart(brand_counts)
+        query_options = df['query'].dropna().unique()
+        selected_query = st.selectbox("Pick a query to explore:", query_options)
+        filtered_df = df[df['query'] == selected_query]
+        st.dataframe(filtered_df)
     except JSONDecodeError as e:
         st.error("JSON parsing failed. Refresh the page and try again.")
         #st.text(f"Raw output: {response.output_text[:500]}")  # Optional: log or show snippet
         event = None
-    st.write(f'Getting query results for {num_queries} queries.')
     #st.write(df['query'].unique())
-    credentials_dict = st.secrets["GOOGLE_CREDENTIALS"]
-    creds = service_account.Credentials.from_service_account_info(dict(credentials_dict))
-    client = language_v1.LanguageServiceClient(credentials=creds)
-    # Apply the function to the 'result' column
-    df[["sentiment_score", "sentiment_magnitude"]] = df["result"].apply(lambda x: pd.Series(get_sentiment(x)))
-    df['brand_product'] = df['brand'] + ' ' + df['product name']
-    st.dataframe(df)
-    brand_counts = df['brand'].value_counts()
-    st.bar_chart(brand_counts)
-    query_options = df['query'].dropna().unique()
-    selected_query = st.selectbox("Pick a query to explore:", query_options)
-    filtered_df = df[df['query'] == selected_query]
-    st.dataframe(filtered_df)
