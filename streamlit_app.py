@@ -119,7 +119,7 @@ if convert_button:
             pass
         df = pd.json_normalize(total_queries['serps'])
     except JSONDecodeError as e:
-        st.error("JSON parsing failed.")
+        st.error("JSON parsing failed. Refresh the page and try again.")
         st.text(f"Raw output: {response.output_text[:500]}")  # Optional: log or show snippet
         event = None
     st.write(f'Getting query results for {num_queries} queries.')
