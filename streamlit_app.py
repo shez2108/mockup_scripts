@@ -114,6 +114,9 @@ convert_button = st.button("Search")
 if convert_button:
     try:
         total_queries = get_query_response(query)
+        if not total_queries:
+            st.error('No output received from response. Try searching again or refreshing the page.')
+            return None
         df = pd.json_normalize(total_queries['serps'])
     except JSONDecodeError as e:
         st.error("JSON parsing failed.")
