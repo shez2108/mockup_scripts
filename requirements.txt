@@ -2,3 +2,4 @@ pandas
 openai
 streamlit
 google-cloud-language
+google-auth
