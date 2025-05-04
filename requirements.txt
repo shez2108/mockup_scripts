@@ -1,4 +1,4 @@
 pandas
 openai
 streamlit
-google-cloud
+google-cloud-language
