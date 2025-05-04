@@ -3,8 +3,8 @@ import json
 from openai import OpenAI
 import pandas as pd
 from collections import Counter
-import json
-from json import json.decoder
+#import json
+#from json import json.decoder
 
 st.set_page_config(
     page_title="Query-based Matching for Chat SEO",
@@ -111,10 +111,11 @@ def get_query_response(query):
     event = json.loads(response.output_text)
     return event
 
+convert_button = st.button("Search!")
+if convert_button:
+    total_queries = get_query_response(query)
+    df = pd.json_normalize(total_queries['serps'])
 
-total_queries = get_query_response(query)
-df = pd.json_normalize(total_queries['serps'])
+    st.write(df['description'].unique())
 
-st.write(df['description'].unique())
-
-st.write(df.head())
+    st.write(df.head())
