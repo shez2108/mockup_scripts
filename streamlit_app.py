@@ -131,22 +131,30 @@ def safe_get_sentiment(text):
         return None, None    
 convert_button = st.button("Search")
 if convert_button:
+    time.sleep(1)
     st.write(f'Getting query results for {num_queries} queries.')
+    time.sleep(5)
     try:
         total_queries = get_query_response(query)
         if not total_queries:
             st.error('No output received from response. Try searching again or refreshing the page.')
             pass
+        time.sleep(5)
         df = pd.json_normalize(total_queries['serps'])
         credentials_dict = st.secrets["GOOGLE_CREDENTIALS"]
         creds = service_account.Credentials.from_service_account_info(dict(credentials_dict))
         client = language_v1.LanguageServiceClient(credentials=creds)
         # Apply the function to the 'result' column
+        time.sleep(5)
         df[["sentiment_score", "sentiment_magnitude"]] = df["result"].apply(lambda x: pd.Series(safe_get_sentiment(x)))
         df['brand_product'] = df['brand'] + ' ' + df['product name']
+        time.sleep(1)
         st.dataframe(df)
+        time.sleep(1)
         brand_counts = df['brand'].value_counts()
+        time.sleep(1)
         st.bar_chart(brand_counts)
+        time.sleep(1)
         query_options = df['query'].dropna().unique()
         selected_query = st.selectbox("Pick a query to explore:", query_options)
         filtered_df = df[df['query'] == selected_query]
