@@ -121,7 +121,14 @@ def get_sentiment(text):
     response = client.analyze_sentiment(request={"document": document})
     sentiment = response.document_sentiment
     return sentiment.score, sentiment.magnitude
-    
+def safe_get_sentiment(text):
+    try:
+        if pd.isnull(text) or not isinstance(text, str) or text.strip() == "":
+            return None, None
+        return get_sentiment(text)
+    except Exception as e:
+        print(f"Sentiment error: {e} — on text: {str(text)[:60]}")
+        return None, None    
 convert_button = st.button("Search")
 if convert_button:
     st.write(f'Getting query results for {num_queries} queries.')
@@ -135,7 +142,7 @@ if convert_button:
         creds = service_account.Credentials.from_service_account_info(dict(credentials_dict))
         client = language_v1.LanguageServiceClient(credentials=creds)
         # Apply the function to the 'result' column
-        df[["sentiment_score", "sentiment_magnitude"]] = df["result"].apply(lambda x: pd.Series(get_sentiment(x)))
+        df[["sentiment_score", "sentiment_magnitude"]] = df["result"].apply(lambda x: pd.Series(safe_get_sentiment(x)))
         df['brand_product'] = df['brand'] + ' ' + df['product name']
         st.dataframe(df)
         brand_counts = df['brand'].value_counts()
