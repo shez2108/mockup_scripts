@@ -147,7 +147,6 @@ if convert_button:
         client = language_v1.LanguageServiceClient(credentials=creds)
         # Apply the function to the 'result' column
         time.sleep(5)
-        df[["sentiment_score", "sentiment_magnitude"]] = df["result"].apply(lambda x: pd.Series(safe_get_sentiment(x)))
         df['brand_product'] = df['brand'] + ' ' + df['product name']
         time.sleep(1)
         st.dataframe(df)
@@ -160,6 +159,15 @@ if convert_button:
         selected_query = st.selectbox("Pick a query to explore:", query_options)
         filtered_df = df[df['query'] == selected_query]
         st.dataframe(filtered_df)
+        # Add option for sentiment scoring
+        time.sleep(1)
+        option = st.radio("Include Sentiment Scores?", ["Yes", "No"])
+        if option == 'Yes':
+            time.sleep(2)
+            df[["sentiment_score", "sentiment_magnitude"]] = df["result"].apply(lambda x: pd.Series(safe_get_sentiment(x)))
+            time.sleep(5)
+            # View results
+            st.write(df[["result", "sentiment_score"]])
     except JSONDecodeError as e:
         st.error("JSON parsing failed. Refresh the page and try again.")
         #st.text(f"Raw output: {response.output_text[:500]}")  # Optional: log or show snippet
