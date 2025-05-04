@@ -9,5 +9,17 @@ st.set_page_config(
     layout="centered"
 )
 
+api_key = st.secrets["OPENAI_API_KEY"]
+
 # Main title with icon
 st.title("QMatch")
+
+# Footer note in an info box
+st.info("""
+    ℹ️ **Purpose**: This tool summarises brand mentions and product sentiment in ChatGPT. 
+""")
+
+client = OpenAI(
+    # This is the default and can be omitted
+    api_key=api_key',
+)
