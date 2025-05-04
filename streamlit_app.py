@@ -21,5 +21,5 @@ st.info("""
 
 client = OpenAI(
     # This is the default and can be omitted
-    api_key=api_key',
+    api_key=api_key,
 )
