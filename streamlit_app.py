@@ -2,7 +2,6 @@ import streamlit as st
 import json
 from openai import OpenAI
 import pandas as pd
-import spacy
 from collections import Counter
 
 st.set_page_config(
