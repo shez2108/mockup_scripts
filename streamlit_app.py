@@ -136,7 +136,9 @@ if convert_button:
         event = None
     st.write(f'Getting query results for {num_queries} queries.')
     #st.write(df['query'].unique())
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = st.secrets[GOOGLE_CREDENTIALS]
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = st.secrets["GOOGLE_CREDENTIALS"]
+    #credentials_dict = st.secrets["GOOGLE_CREDENTIALS"]
+    #credentials = service_account.Credentials.from_service_account_info(dict(credentials_dict))
     client = language_v1.LanguageServiceClient()
     # Apply the function to the 'result' column
     df[["sentiment_score", "sentiment_magnitude"]] = df["result"].apply(
