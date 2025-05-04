@@ -5,6 +5,7 @@ import pandas as pd
 from collections import Counter
 import json
 from json import JSONDecodeError
+from google.cloud import language_v1
 
 st.set_page_config(
     page_title="Query-based Matching for Chat SEO",
