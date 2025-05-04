@@ -111,7 +111,7 @@ def get_query_response(query):
     event = json.loads(response.output_text)
     return event
 
-convert_button = st.button("Search!")
+convert_button = st.button("Search")
 if convert_button:
     total_queries = get_query_response(query)
     df = pd.json_normalize(total_queries['serps'])
