@@ -4,7 +4,7 @@ from openai import OpenAI
 import pandas as pd
 from collections import Counter
 import json
-#from json import json.decoder
+from json import JSONDecodeError
 
 st.set_page_config(
     page_title="Query-based Matching for Chat SEO",
@@ -116,7 +116,9 @@ if convert_button:
         total_queries = get_query_response(query)
         df = pd.json_normalize(total_queries['serps'])
     except JSONDecodeError as e:
-        st.error(f"Failed to parse JSON: {e}. Try again.")
+        st.error("JSON parsing failed.")
+        st.text(f"Raw output: {response.output_text[:500]}")  # Optional: log or show snippet
+        event = None
     st.write(f'Getting query results for {num_queries} queries.')
     st.write(df['query'].unique())
     df['brand_product'] = df['brand'] + ' ' + df['product name']
