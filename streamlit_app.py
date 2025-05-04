@@ -114,3 +114,5 @@ total_queries = get_query_response(query)
 df = pd.json_normalize(total_queries['serps'])
 
 st.write(df['description'].unique())
+
+st.write(df.head())
