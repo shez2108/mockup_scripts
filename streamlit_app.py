@@ -31,7 +31,7 @@ num_queries = st.number_input('How many queries do you want to check brand menti
 
 
 if num_queries > 100:
-    st.write('Sorry, you can't look at more than 100 queries')
+    st.write('Sorry', 'you can't look at more than 100 queries')
     num_queries = st.text_input('How many queries do you want to check brand mentions across? (Up to 100)')
     num_queries = int(num_queries)
 
