@@ -37,7 +37,6 @@ if num_queries > 100:
     num_queries = st.text_input('How many queries do you want to check brand mentions across? (Up to 100)')
     num_queries = int(num_queries)
 
-st.write(f'Getting query results for {num_queries} queries.')
 
 json_format = {
     "type": "json_schema",
@@ -115,7 +114,6 @@ convert_button = st.button("Search")
 if convert_button:
     total_queries = get_query_response(query)
     df = pd.json_normalize(total_queries['serps'])
-
+    st.write(f'Getting query results for {num_queries} queries.')
     st.write(df['description'].unique())
-
     st.write(df.head())
