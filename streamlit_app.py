@@ -49,14 +49,14 @@ json_format = {
                 "items": {
                     "type": "object",
                     "properties": {
-                        "description": {"type": "string"},
+                        "query": {"type": "string"},
                         "result": {"type": "string"},
                         "source": {"type": "string"},
                         "brand": {"type": "string"},
                         "product name" : {"type": "string"},
                         "urls": {"type": "string"}
                     },
-                    "required": ["description", "result", "source", "brand", "product name", "urls"],
+                    "required": ["query", "result", "source", "brand", "product name", "urls"],
                     "additionalProperties": False
                 }
             },
@@ -93,7 +93,7 @@ def get_query_response(query):
                     "and the 'results' property should resemble the typical output of searchGPT after a user prompt "
                     "including the brand mentions with the sources and urls you got the information from. "
                     "The other properties break down the results. For instance "
-                    " - 'description' should be the query that returned this particular query result / product recommendation."
+                    " - 'query' should be the query that returned this particular query result / product recommendation."
                     " - 'sources' show which sources chatgpt got the info for "
                     " - 'brands' show which brands are mentioned in the results "
                     " - 'products' shows which product names are being mentioned in the results for those brands "
@@ -115,6 +115,6 @@ if convert_button:
     total_queries = get_query_response(query)
     df = pd.json_normalize(total_queries['serps'])
     st.write(f'Getting query results for {num_queries} queries.')
-    st.write(df['description'].unique())
+    st.write(df['query'].unique())
     df['brand_product'] = df['brand'] + ' ' + df['product name']
     st.dataframe(df)
