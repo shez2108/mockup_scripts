@@ -140,9 +140,7 @@ if convert_button:
     creds = service_account.Credentials.from_service_account_info(dict(credentials_dict))
     client = language_v1.LanguageServiceClient(credentials=creds)
     # Apply the function to the 'result' column
-    df[["sentiment_score", "sentiment_magnitude"]] = df["result"].apply(
-        lambda x: pd.Series(get_sentiment(x))
-    )
+    df[["sentiment_score", "sentiment_magnitude"]] = df["result"].apply(lambda x: pd.Series(get_sentiment(x)))
     df['brand_product'] = df['brand'] + ' ' + df['product name']
     st.dataframe(df)
     brand_counts = df['brand'].value_counts()
