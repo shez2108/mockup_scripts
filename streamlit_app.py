@@ -8,6 +8,7 @@ from json import JSONDecodeError
 from google.cloud import language_v1
 import os 
 from google.oauth2 import service_account
+import time
 
 st.set_page_config(
     page_title="Query-based Matching for Chat SEO",
