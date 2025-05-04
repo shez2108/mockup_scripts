@@ -116,4 +116,5 @@ if convert_button:
     df = pd.json_normalize(total_queries['serps'])
     st.write(f'Getting query results for {num_queries} queries.')
     st.write(df['description'].unique())
-    st.write(df.head())
+    df['brand_product'] = df['brand'] + ' ' + df['product name']
+    st.dataframe(df)
