@@ -6,6 +6,7 @@ from collections import Counter
 import json
 from json import JSONDecodeError
 from google.cloud import language_v1
+import os 
 
 st.set_page_config(
     page_title="Query-based Matching for Chat SEO",
@@ -111,6 +112,15 @@ def get_query_response(query):
     event = json.loads(response.output_text)
     return event
 
+# Define a function to get sentiment
+def get_sentiment(text):
+    if pd.isnull(text):
+        return None, None
+    document = language_v1.Document(content=text, type_=language_v1.Document.Type.PLAIN_TEXT)
+    response = client.analyze_sentiment(request={"document": document})
+    sentiment = response.document_sentiment
+    return sentiment.score, sentiment.magnitude
+    
 convert_button = st.button("Search")
 if convert_button:
     try:
@@ -124,6 +134,18 @@ if convert_button:
         st.text(f"Raw output: {response.output_text[:500]}")  # Optional: log or show snippet
         event = None
     st.write(f'Getting query results for {num_queries} queries.')
-    st.write(df['query'].unique())
+    #st.write(df['query'].unique())
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = st.secrets[GOOGLE_CREDENTIALS]
+    client = language_v1.LanguageServiceClient()
+    # Apply the function to the 'result' column
+    df[["sentiment_score", "sentiment_magnitude"]] = df["result"].apply(
+        lambda x: pd.Series(get_sentiment(x))
+    )
     df['brand_product'] = df['brand'] + ' ' + df['product name']
     st.dataframe(df)
+    brand_counts = df['brand'].value_counts()
+    st.bar_chart(brand_counts)
+    query_options = df['query'].dropna().unique()
+    selected_query = st.selectbox("Pick a query to explore:", query_options)
+    filtered_df = df[df['query'] == selected_query]
+    st.dataframe(filtered_df)
