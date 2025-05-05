@@ -72,42 +72,45 @@ agg = num_queries - 1
 #print(type(agg))
 
 def get_query_response(query):
-
-    response = client.responses.create(
-        model="gpt-4o-2024-08-06",
-        tools=[{'type': 'web_search_preview'}],
-        input=[
-            {'role': 'system',
-             'content': (
-                'You are part of a tool that generates related queries/prompts and their results based on '
-                'a user-inputted LLM prompt/query, so that we can see what the top product recommendations, deals and results are for each query.'
-            )
-            },
-            {
-                'role': 'user',
-                'content': (
-                    f"Return the results of {num_queries} queries including the original query {query} and {agg} closely related search queries, including relevant brand mentions.\n"
-                    "You should return an entry/row for each product recommendation that shows up as a result of a query. One query therefore may have mutliple rows."
-                    "For example, if a query for cheap phone deals under 500 dollars returns 5 different product recommendations, each product should have its own row."
-                    "and the 'results' property should resemble the typical output of searchGPT after a user prompt "
-                    "including the brand mentions with the sources and urls you got the information from. "
-                    "The other properties break down the results. For instance "
-                    " - 'query' should be the query that returned this particular query result / product recommendation."
-                    " - 'sources' show which sources chatgpt got the info for "
-                    " - 'brands' show which brands are mentioned in the results "
-                    " - 'products' shows which product names are being mentioned in the results for those brands "
-                    " - 'urls' gives the specific urls of the sources. "
-                    " if you are returning the results of 10 queries, and there are 5 product recommendations per query. there should be a total of 50 entries "
+    try:
+        agg = num_queries - 1
+        response = client.responses.create(
+            model="gpt-4o-2024-08-06",
+            tools=[{'type': 'web_search_preview'}],
+            input=[
+                {'role': 'system',
+                 'content': (
+                     'You are part of a tool that generates related queries/prompts and their results based on '
+                     'a user-inputted LLM prompt/query, so that we can see what the top product recommendations, deals and results are for each query.'
+                 )
+                },
+                {
+                    'role': 'user',
+                    'content': (
+                        f"Return the results of {num_queries} queries including the original query {query} and {agg} closely related search queries, including relevant brand mentions.\n"
+                        "You should return an entry/row for each product recommendation that shows up as a result of a query. One query therefore may have mutliple rows."
+                        "For example, if a query for cheap phone deals under 500 dollars returns 5 different product recommendations, each product should have its own row."
+                        "and the 'results' property should resemble the typical output of searchGPT after a user prompt "
+                        "including the brand mentions with the sources and urls you got the information from. "
+                        "The other properties break down the results. For instance "
+                        " - 'query' should be the query that returned this particular query result / product recommendation."
+                        " - 'sources' show which sources chatgpt got the info for "
+                        " - 'brands' show which brands are mentioned in the results "
+                        " - 'products' shows which product names are being mentioned in the results for those brands "
+                        " - 'urls' gives the specific urls of the sources. "
+                        " if you are returning the results of 10 queries, and there are 5 product recommendations per query. there should be a total of 50 entries "
                     )
                 }
-                ],
-        text = {
-            "format": json_format
-        }
+            ],
+            text = {
+                "format": json_format
+            }
         )
-
-    event = json.loads(response.output_text)
-    return event
+        event = json.loads(response.output_text)
+        return event
+    except JSONDecodeError:
+        st.error("❌ JSON parsing failed. Try again.")
+        return None
 
 # Define a function to get sentiment
 def get_sentiment(text):
