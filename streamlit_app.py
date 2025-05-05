@@ -28,7 +28,7 @@ client = OpenAI(
 # take a query input
 query = st.text_input('Type your primary LLM Query here:')
 
-num_queries = st.number_input('How many queries do you want to check brand mentions across? (Up to 100)')
+num_queries = st.number_input('How many queries? (Up to 100)', min_value=1, max_value=100, value=5)
 
 
 if num_queries > 100:
