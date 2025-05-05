@@ -12,15 +12,11 @@ import time
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 
-st.set_page_config(
-    page_title="Query-based Matching for Chat SEO",
-    layout="centered"
-)
 
 api_key = st.secrets["OPENAI_API_KEY"]
 
 # Streamlit setup
-st.set_page_config(page_title="QMatch", layout="centered")
+st.set_page_config(page_title="Query-based Matching for Chat Engine SEO", layout="centered")
 st.title("QMatch")
 st.info("ℹ️ **Purpose**: This tool summarises brand mentions and product sentiment in ChatGPT.")
 
