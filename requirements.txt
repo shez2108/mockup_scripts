@@ -3,3 +3,5 @@ openai
 streamlit
 google-cloud-language
 google-auth
+wordcloud
+matplotlib
