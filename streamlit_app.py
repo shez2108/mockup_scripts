@@ -145,14 +145,12 @@ if st.button("Search") and query:
             # Brand mentions chart
             st.subheader("Brand Mentions")
             st.bar_chart(df["brand"].value_counts())
-            # Word cloud of query text
-            st.subheader("Query Word Cloud")
-            combined_queries = " ".join(df["query"].dropna().unique())
-            wc = WordCloud(width=800, height=400, background_color="white").generate(combined_queries)
-            fig, ax = plt.subplots()
-            ax.imshow(wc, interpolation="bilinear")
-            ax.axis("off")
-            st.pyplot(fig)
+            # query text
+            st.subheader("Generated Queries")
+            queries = df["query"].dropna().unique()
+
+            for q in queries:
+                st.markdown(f"- {q}")
             # Sentiment toggle
             if st.radio("Run sentiment analysis?", ["No", "Yes"]) == "Yes":
                 creds = service_account.Credentials.from_service_account_info(dict(st.secrets["GOOGLE_CREDENTIALS"]))
