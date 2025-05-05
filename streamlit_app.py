@@ -11,6 +11,7 @@ from google.oauth2 import service_account
 import time
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
+import logging
 
 
 api_key = st.secrets["OPENAI_API_KEY"]
@@ -157,8 +158,8 @@ if st.button("Search") and query:
             credentials_dict["private_key"] = credentials_dict["private_key"].replace("\\n", "\n")
             creds = service_account.Credentials.from_service_account_info(credentials_dict)
             # Log to Streamlit's server logs (not visible in the app UI)
-            print("PRIVATE KEY (first 100 chars):")
-            print(credentials_dict["private_key"][:100])
+            logging.basicConfig(level=logging.INFO)
+            logging.info("PRIVATE KEY (first 100 chars): %s", credentials_dict["private_key"][:100])
             lang_client = language_v1.LanguageServiceClient(credentials=creds)
             df[["sentiment_score", "sentiment_magnitude"]] = df["result"].apply(lambda x: pd.Series(safe_get_sentiment(x, lang_client)))
             st.dataframe(df[["result", "sentiment_score"]])
