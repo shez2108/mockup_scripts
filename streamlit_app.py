@@ -154,8 +154,8 @@ if st.button("Search") and query:
             # Sentiment toggle
             st.subheader("Sentiment Scores")
             credentials_dict = st.secrets["GOOGLE_CREDENTIALS"]
-            st.write(credentials_dict["client_email"])
-            creds = service_account.Credentials.from_service_account_info(dict(credentials_dict))
+            credentials_cleaned = json.loads(json.dumps(credentials_dict))
+            creds = service_account.Credentials.from_service_account_info(credentials_cleaned)
             lang_client = language_v1.LanguageServiceClient(credentials=creds)
             df[["sentiment_score", "sentiment_magnitude"]] = df["result"].apply(lambda x: pd.Series(safe_get_sentiment(x, lang_client)))
             st.dataframe(df[["result", "sentiment_score"]])
