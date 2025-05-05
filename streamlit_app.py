@@ -141,33 +141,30 @@ if st.button("Search") and query:
             df['brand_product'] = df['brand'] + ' ' + df['product name']
             time.sleep(1)
             st.dataframe(df)
+            st.download_button("⬇️ Download CSV", df.to_csv(index=False), "qmatch_output.csv", "text/csv")
+            # Brand mentions chart
+            st.subheader("Brand Mentions")
+            st.bar_chart(df["brand"].value_counts())
+            # Word cloud of query text
+            st.subheader("Query Word Cloud")
+            combined_queries = " ".join(df["query"].dropna().unique())
+            wc = WordCloud(width=800, height=400, background_color="white").generate(combined_queries)
+            fig, ax = plt.subplots()
+            ax.imshow(wc, interpolation="bilinear")
+            ax.axis("off")
+            st.pyplot(fig)
+            # Sentiment toggle
+            if st.radio("Run sentiment analysis?", ["No", "Yes"]) == "Yes":
+                creds = service_account.Credentials.from_service_account_info(dict(st.secrets["GOOGLE_CREDENTIALS"]))
+                lang_client = language_v1.LanguageServiceClient(credentials=creds)
+                df[["sentiment_score", "sentiment_magnitude"]] = df["result"].apply(
+                    lambda x: pd.Series(safe_get_sentiment(x, lang_client))
+                )
+                st.dataframe(df[["result", "sentiment_score", "sentiment_magnitude"]])
         else:
             st.error('No output received from response. Try searching again or refreshing the page.')
             pass
-        time.sleep(5)
-        credentials_dict = st.secrets["GOOGLE_CREDENTIALS"]
-        creds = service_account.Credentials.from_service_account_info(dict(credentials_dict))
-        client = language_v1.LanguageServiceClient(credentials=creds)
-        time.sleep(1)
-        brand_counts = df['brand'].value_counts()
-        time.sleep(1)
-        st.bar_chart(brand_counts)
-        time.sleep(1)
-        query_options = df['query'].dropna().unique()
-        selected_query = st.selectbox("Pick a query to explore:", query_options)
-        filtered_df = df[df['query'] == selected_query]
-        st.dataframe(filtered_df)
-        # Add option for sentiment scoring
-        time.sleep(1)
-        option = st.radio("Include Sentiment Scores?", ["Yes", "No"])
-        if option == 'Yes':
-            time.sleep(2)
-            df[["sentiment_score", "sentiment_magnitude"]] = df["result"].apply(lambda x: pd.Series(safe_get_sentiment(x)))
-            time.sleep(5)
-            # View results
-            st.write(df[["result", "sentiment_score"]])
     except JSONDecodeError as e:
         st.error("JSON parsing failed. Refresh the page and try again.")
         #st.text(f"Raw output: {response.output_text[:500]}")  # Optional: log or show snippet
         event = None
-    #st.write(df['query'].unique())
