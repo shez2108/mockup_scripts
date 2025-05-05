@@ -143,14 +143,14 @@ if st.button("Search") and query:
             # query text
             st.subheader("Generated Queries")
             queries = df["query"].dropna().unique()
+            for q in queries:
+                st.markdown(f"- {q}")
             st.dataframe(df)
             st.download_button("⬇️ Download CSV", df.to_csv(index=False), "qmatch_output.csv", "text/csv")
             # Brand mentions chart
             st.subheader("Brand Mentions")
             st.bar_chart(df["brand"].value_counts())
 
-            for q in queries:
-                st.markdown(f"- {q}")
             # Sentiment toggle
             st.subheader("Sentiment Scores")
             creds = service_account.Credentials.from_service_account_info(dict(st.secrets["GOOGLE_CREDENTIALS"]))
