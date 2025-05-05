@@ -153,7 +153,7 @@ if st.button("Search") and query:
             st.bar_chart(df["brand"].value_counts())
 
             # Sentiment toggle
-           """st.subheader("Sentiment Scores")
+            """st.subheader("Sentiment Scores")
             credentials_dict = dict(st.secrets["GOOGLE_SECOND_CREDENTIALS"])  # ← convert to plain dict
             credentials_dict["private_key"] = credentials_dict["private_key"].replace("\\n", "\n")
             creds = service_account.Credentials.from_service_account_info(credentials_dict)
