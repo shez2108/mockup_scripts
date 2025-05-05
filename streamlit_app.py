@@ -67,11 +67,10 @@ json_format = {
     "strict": True
 }
 
-agg = num_queries - 1
 
 #print(type(agg))
 
-def get_query_response(query):
+def get_query_response(query, num_queries):
     try:
         agg = num_queries - 1
         response = client.responses.create(
@@ -115,41 +114,40 @@ def get_query_response(query):
 
 
 # Define a function to get sentiment
-def get_sentiment(text):
+def get_sentiment(text, lang_client):
     if pd.isnull(text):
         return None, None
     document = language_v1.Document(content=text, type_=language_v1.Document.Type.PLAIN_TEXT)
-    response = client.analyze_sentiment(request={"document": document})
+    response = lang_client.analyze_sentiment(request={"document": document})
     sentiment = response.document_sentiment
     return sentiment.score, sentiment.magnitude
-def safe_get_sentiment(text):
+def safe_get_sentiment(text, lang_client):
     try:
-        if pd.isnull(text) or not isinstance(text, str) or text.strip() == "":
-            return None, None
-        return get_sentiment(text)
+        return get_sentiment(text, lang_client) 
     except Exception as e:
-        print(f"Sentiment error: {e} — on text: {str(text)[:60]}")
-        return None, None    
-convert_button = st.button("Search")
-if convert_button:
+        st.warning(f"Sentiment error: {e}")
+        return None, None 
+
+if st.button("Search") and query:
     time.sleep(1)
     st.write(f'Getting query results for {num_queries} queries.')
     time.sleep(5)
     try:
-        total_queries = get_query_response(query)
-        if not total_queries:
+        total_queries = get_query_response(query, num_queries)
+        if total_queries:
+            df = pd.json_normalize(total_queries['serps'])
+            # Apply the function to the 'result' column
+            time.sleep(5)
+            df['brand_product'] = df['brand'] + ' ' + df['product name']
+            time.sleep(1)
+            st.dataframe(df)
+        else:
             st.error('No output received from response. Try searching again or refreshing the page.')
             pass
         time.sleep(5)
-        df = pd.json_normalize(total_queries['serps'])
         credentials_dict = st.secrets["GOOGLE_CREDENTIALS"]
         creds = service_account.Credentials.from_service_account_info(dict(credentials_dict))
         client = language_v1.LanguageServiceClient(credentials=creds)
-        # Apply the function to the 'result' column
-        time.sleep(5)
-        df['brand_product'] = df['brand'] + ' ' + df['product name']
-        time.sleep(1)
-        st.dataframe(df)
         time.sleep(1)
         brand_counts = df['brand'].value_counts()
         time.sleep(1)
