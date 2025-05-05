@@ -153,7 +153,7 @@ if st.button("Search") and query:
             st.bar_chart(df["brand"].value_counts())
 
             # Sentiment toggle
-            st.subheader("Sentiment Scores")
+           """st.subheader("Sentiment Scores")
             credentials_dict = dict(st.secrets["GOOGLE_SECOND_CREDENTIALS"])  # ← convert to plain dict
             credentials_dict["private_key"] = credentials_dict["private_key"].replace("\\n", "\n")
             creds = service_account.Credentials.from_service_account_info(credentials_dict)
@@ -162,7 +162,7 @@ if st.button("Search") and query:
             logging.info("PRIVATE KEY (first 100 chars): %s", credentials_dict["private_key"][:100])
             gcloud_client = language_v1.LanguageServiceClient(credentials=creds)
             df[["sentiment_score", "sentiment_magnitude"]] = df["result"].apply(lambda x: pd.Series(safe_get_sentiment(x)))
-            st.dataframe(df[["result", "sentiment_score"]])
+            st.dataframe(df[["result", "sentiment_score"]])"""
         else:
             st.error('No output received from response. Try searching again or refreshing the page.')
             pass
