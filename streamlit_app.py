@@ -119,7 +119,7 @@ def get_sentiment(text):
     if pd.isnull(text):
         return None, None
     document = language_v1.Document(content=text, type_=language_v1.Document.Type.PLAIN_TEXT)
-    response = client.analyze_sentiment(request={"document": document})
+    response = gcloud_client.analyze_sentiment(request={"document": document})
     sentiment = response.document_sentiment
     return sentiment.score, sentiment.magnitude
 def safe_get_sentiment(text):
@@ -160,7 +160,7 @@ if st.button("Search") and query:
             # Log to Streamlit's server logs (not visible in the app UI)
             logging.basicConfig(level=logging.INFO)
             logging.info("PRIVATE KEY (first 100 chars): %s", credentials_dict["private_key"][:100])
-            client = language_v1.LanguageServiceClient(credentials=creds)
+            gcloud_client = language_v1.LanguageServiceClient(credentials=creds)
             df[["sentiment_score", "sentiment_magnitude"]] = df["result"].apply(lambda x: pd.Series(safe_get_sentiment(x)))
             st.dataframe(df[["result", "sentiment_score"]])
         else:
