@@ -140,25 +140,23 @@ if st.button("Search") and query:
             time.sleep(5)
             df['brand_product'] = df['brand'] + ' ' + df['product name']
             time.sleep(1)
+            # query text
+            st.subheader("Generated Queries")
+            queries = df["query"].dropna().unique()
             st.dataframe(df)
             st.download_button("⬇️ Download CSV", df.to_csv(index=False), "qmatch_output.csv", "text/csv")
             # Brand mentions chart
             st.subheader("Brand Mentions")
             st.bar_chart(df["brand"].value_counts())
-            # query text
-            st.subheader("Generated Queries")
-            queries = df["query"].dropna().unique()
 
             for q in queries:
                 st.markdown(f"- {q}")
             # Sentiment toggle
-            if st.radio("Run sentiment analysis?", ["No", "Yes"]) == "Yes":
-                creds = service_account.Credentials.from_service_account_info(dict(st.secrets["GOOGLE_CREDENTIALS"]))
-                lang_client = language_v1.LanguageServiceClient(credentials=creds)
-                df[["sentiment_score", "sentiment_magnitude"]] = df["result"].apply(
-                    lambda x: pd.Series(safe_get_sentiment(x, lang_client))
-                )
-                st.dataframe(df[["result", "sentiment_score", "sentiment_magnitude"]])
+            st.subheader("Sentiment Scores")
+            creds = service_account.Credentials.from_service_account_info(dict(st.secrets["GOOGLE_CREDENTIALS"]))
+            lang_client = language_v1.LanguageServiceClient(credentials=creds)
+            df[["sentiment_score", "sentiment_magnitude"]] = df["result"].apply(lambda x: pd.Series(safe_get_sentiment(x, lang_client)))
+            st.dataframe(df[["result", "sentiment_score"]])
         else:
             st.error('No output received from response. Try searching again or refreshing the page.')
             pass
