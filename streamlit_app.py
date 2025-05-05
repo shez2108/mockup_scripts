@@ -78,11 +78,12 @@ def get_query_response(query):
             model="gpt-4o-2024-08-06",
             tools=[{'type': 'web_search_preview'}],
             input=[
-                {'role': 'system',
-                 'content': (
-                     'You are part of a tool that generates related queries/prompts and their results based on '
-                     'a user-inputted LLM prompt/query, so that we can see what the top product recommendations, deals and results are for each query.'
-                 )
+                {
+                    'role': 'system',
+                    'content': (
+                        'You are part of a tool that generates related queries/prompts and their results based on '
+                        'a user-inputted LLM prompt/query, so that we can see what the top product recommendations, deals and results are for each query.'
+                    )
                 },
                 {
                     'role': 'user',
@@ -102,7 +103,7 @@ def get_query_response(query):
                     )
                 }
             ],
-            text = {
+            text={
                 "format": json_format
             }
         )
@@ -111,6 +112,7 @@ def get_query_response(query):
     except JSONDecodeError:
         st.error("❌ JSON parsing failed. Try again.")
         return None
+
 
 # Define a function to get sentiment
 def get_sentiment(text):
