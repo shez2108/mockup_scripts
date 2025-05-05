@@ -19,13 +19,10 @@ st.set_page_config(
 
 api_key = st.secrets["OPENAI_API_KEY"]
 
-# Main title with icon
+# Streamlit setup
+st.set_page_config(page_title="QMatch", layout="centered")
 st.title("QMatch")
-
-# Footer note in an info box
-st.info("""
-    ℹ️ **Purpose**: This tool summarises brand mentions and product sentiment in ChatGPT. 
-""")
+st.info("ℹ️ **Purpose**: This tool summarises brand mentions and product sentiment in ChatGPT.")
 
 client = OpenAI(
     # This is the default and can be omitted
